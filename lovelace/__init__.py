@@ -66,7 +66,7 @@ app.config.from_pyfile("config.py")
 dashboard.config.init_from(file="monitor/config.cfg")
 dashboard.bind(app)
 
-limiter = Limiter(app, key_func=get_remote_address, default_limits=["10 per minute"])
+limiter = Limiter(get_remote_address, app=app, default_limits=["10 per minute"])
 socketio = SocketIO(app, cors_allowed_origins=["127.0.0.1", "10.0.2.2"])
 
 from lovelace.account.routes import account_page
