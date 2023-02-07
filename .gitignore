@@ -161,7 +161,6 @@ cython_debug/
 
 # Private key
 key.pem
-aws-ec2.pem
 
 # Others
 monitor/dashboard.db
