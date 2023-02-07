@@ -54,20 +54,35 @@ auth = HTTPBasicAuth(app)
 metrics = PrometheusMetrics(app, metrics_decorator=auth.login_required)
 metrics.register_default(
     metrics.counter(
-        'by_path_counter', 'Request count by request paths',
-        labels={'path': lambda: request.path}
+        "by_path_counter",
+        "Request count by request paths",
+        labels={"path": lambda: request.path},
     )
 )
+
+
 @auth.verify_password
 def verify_credentials(username, password):
-    return (username, password) == (os.environ.get("METRICS_USERNAME"), os.environ.get("METRICS_PASSWORD"))
+    return (username, password) == (
+        os.environ.get("METRICS_USERNAME"),
+        os.environ.get("METRICS_PASSWORD"),
+    )
+
+
 app.config.from_pyfile("config.py")
 
 dashboard.config.init_from(file="monitor/config.cfg")
 dashboard.bind(app)
 
 limiter = Limiter(get_remote_address, app=app, default_limits=["10 per minute"])
-socketio = SocketIO(app, cors_allowed_origins=["127.0.0.1", "10.0.2.2"])
+socketio = SocketIO(
+    app,
+    cors_allowed_origins=[
+        "127.0.0.1",
+        "10.0.2.2",
+        "https://lovelace-server.onrender.com",
+    ],
+)
 
 from lovelace.account.routes import account_page
 from lovelace.recommendation.routes import recommendation
