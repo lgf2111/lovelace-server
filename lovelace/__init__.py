@@ -78,10 +78,6 @@ limiter = Limiter(get_remote_address, app=app, default_limits=["10 per minute"])
 socketio = SocketIO(
     app,
     cors_allowed_origins=[
-        "127.0.0.1",
-        "10.0.2.2",
-        "https://lovelace-server.onrender.com/",
-        "https://lovelace-server.lgf2111.repl.co/",
         "http://ec2-13-229-224-40.ap-southeast-1.compute.amazonaws.com/",
     ],
 )
