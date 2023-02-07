@@ -16,5 +16,5 @@ RUN pip install -r requirements.txt
 # determine if the server is running in docker
 ARG IN_DOCKER=1
 
-# define the command to run the server
-CMD ["gunicorn", "app:app", "-b", "0.0.0.0:80"]
+# gunicorn --certfile=server.crt --keyfile=server.key -b 0.0.0.0:443 app:app
+CMD ["gunicorn", "--certfile=cert.pem", "--keyfile=key.pem", "-b", "0.0.0.0:443", "run:app"]
