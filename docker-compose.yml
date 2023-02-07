@@ -3,7 +3,7 @@ services:
     lovelace-server:
         build: .
         ports:
-            - "80:80"
+            - "443:443"
         environment:
             - IN_DOCKER=1
         env_file:
