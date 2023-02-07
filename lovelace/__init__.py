@@ -82,6 +82,7 @@ socketio = SocketIO(
         "10.0.2.2",
         "https://lovelace-server.onrender.com/",
         "https://lovelace-server.lgf2111.repl.co/",
+        "http://ec2-13-229-224-40.ap-southeast-1.compute.amazonaws.com/",
     ],
 )
 
