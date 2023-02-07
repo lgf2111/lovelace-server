@@ -17,4 +17,4 @@ RUN pip install -r requirements.txt
 ARG IN_DOCKER=1
 
 # define the command to run the server
-CMD ["gunicorn", "app:app", "-b", "0.0.0.0:3000"]
+CMD ["gunicorn", "app:app", "-b", "0.0.0.0:80"]
