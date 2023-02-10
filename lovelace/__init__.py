@@ -10,6 +10,8 @@ import dotenv
 from prometheus_flask_exporter import PrometheusMetrics
 from flask_httpauth import HTTPBasicAuth
 import flask_monitoringdashboard as dashboard
+from flask_talisman import Talisman
+from flask_wtf.csrf import CSRFProtect
 
 dotenv.load_dotenv()
 ca = certifi.where()
@@ -50,6 +52,10 @@ recommendation_logger = setup_logger("recommendation")
 
 
 app = Flask(__name__)
+app.config["WTF_CSRF_SECRET_KEY"] = os.environ.get("APPLICATION_SIGNATURE_KEY")
+Talisman(app,force_https=False)
+
+#csrf = CSRFProtect(app)
 auth = HTTPBasicAuth(app)
 metrics = PrometheusMetrics(app, metrics_decorator=auth.login_required)
 metrics.register_default(
@@ -59,6 +65,7 @@ metrics.register_default(
         labels={"path": lambda: request.path},
     )
 )
+#csrf.init_app(app)
 
 
 @auth.verify_password
