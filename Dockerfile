@@ -17,4 +17,7 @@ RUN pip install -r requirements.txt
 ARG IN_DOCKER=1
 
 # gunicorn --certfile=ec2-cert.pem --keyfile=ec2-key.pem -b 0.0.0.0:443 run:app
-CMD ["gunicorn", "--certfile=ec2-cert.pem", "--keyfile=ec2-key.pem", "-b", "0.0.0.0:80", "run:app"]
+# CMD ["gunicorn", "--certfile=ec2-cert.pem", "--keyfile=ec2-key.pem", "-b", "0.0.0.0:80", "run:app"]
+
+# gunicorn -b 0.0.0.0:80 run:app
+CMD ["gunicorn", "-b", "0.0.0.0:80", "run:app"]
