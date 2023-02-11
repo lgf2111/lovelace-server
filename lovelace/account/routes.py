@@ -25,6 +25,7 @@ from lovelace.account.utils import (
     schema,
     email_validation,
     password_validation,
+    compare_hash,
 )
 from flask_expects_json import expects_json
 from argon2 import exceptions as argon2_exceptions
@@ -346,22 +347,9 @@ def update_profile(user):
 @account_page.route("/account/profile/update/display_pic", methods=["POST", "GET"])
 @token_required()
 def update_display_pic(user):
-    def compare_hash(hash, file):
-        import hashlib
-        import base64
-
-        text = base64.b64encode(file.read())
-        encoded_text = text.decode("utf-8").encode("utf-8")
-        hash_object = hashlib.sha512(encoded_text)
-        hex_dig = hash_object.hexdigest()
-        print(hex_dig == hash)
-
     try:
-        hash = request.form.get("hash")
-        print(hash)
         user_detail_collection = mongo_account_details_write.account_details
         display_pic = request.files["display_pic"]
-        compare_hash(hash, display_pic)
         new_account_details = account.UserDetails(user, "", "", "", "")
     except Exception as e:
         print(e)
@@ -379,6 +367,9 @@ def update_display_pic(user):
         )
     else:
         encoded_display_pic = display_pic.read()
+        hash = request.form.get("hash")
+        if not compare_hash(hash, encoded_display_pic):
+            return
         new_values = {"$set": {"display_pic": encoded_display_pic}}
         user_detail_collection.account_details.update_one(
             {"email": user}, update=new_values
