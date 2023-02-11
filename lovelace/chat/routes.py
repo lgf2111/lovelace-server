@@ -46,14 +46,16 @@ def join(_, message):
     user1 = message["user1"]
     user2 = message["user2"]
     chat_collection = mongo_chat_write.chat
+    pubkey = message["pubkey"]
     room = chat_collection.chat.find_one({"$and": [{"user1": user1}, {"user2": user2}]})
 
     if room == None:
         room = chat_collection.chat.insert_one(
-            {"user1": message["user1"], "user2": message["user2"], "total_user":1}
+            {"user1": message["user1"], "user2": message["user2"], "total_user":1, "pubkey1":pubkey, "pubkey2":""}
         )
     else:
         chat_collection.chat.update_one({"$and": [{"user1": user1}, {"user2": user2}]}, {"$set": {"total_user":2}})
+        chat_collection.chat.update_one({"$and": [{"user1": user1}, {"user2": user2}]}, {"$set": {"pubkey2":pubkey}})
 
     # join room
     room_name = str(room["_id"])
@@ -63,8 +65,9 @@ def join(_, message):
     # get number of users
     user_count = chat_collection.chat.find_one({"$and": [{"user1": user1}, {"user2": user2}]})["total_user"]
     if user_count == 2:
-        key = secrets.token_urlsafe(32)
-        emit("message", {"key": key}, room_name=room_name)
+        pkey1 = chat_collection.chat.find_one({"$and": [{"user1": user1}, {"user2": user2}]})["pubkey1"]
+        pkey2 = chat_collection.chat.find_one({"$and": [{"user1": user1}, {"user2": user2}]})["pubkey2"]
+        emit("message", {"pubkey1": pkey1, "pubkey2":pkey2}, room_name=room_name)
 
     print(response)
 
