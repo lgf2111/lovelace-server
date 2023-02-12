@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from lovelace import chat_logger as logger
 from lovelace import socketio
-from flask_socketio import join_room, emit, leave_room
+from flask_socketio import join_room, emit, leave_room, send
 from lovelace.account.utils import token_required
 import secrets
 from lovelace import (
@@ -99,7 +99,7 @@ def sent(_, message):
         print(response)
         emit("sent", {"response": response, "message": message}, room=room)
     else:
-        emit("sent", {"response": "Receipient has not approved sender for chat"}, room=room)
+        send("Receipient has not approved sender for chat")
 
 
 @socketio.on("leave", namespace="/chat")
