@@ -30,6 +30,7 @@ services:
       - /sys:/host/sys:ro
       - /:/rootfs:ro
     command:
+      - '--path.rootfs=/host'
       - '--path.procfs=/host/proc'
       - '--path.rootfs=/rootfs'
       - '--path.sysfs=/host/sys'
