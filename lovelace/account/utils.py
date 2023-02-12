@@ -7,6 +7,9 @@ from os import environ
 from validate_email import validate_email
 import re
 import dotenv
+import hashlib
+import base64
+
 
 dotenv.load_dotenv()
 
@@ -35,13 +38,17 @@ def token_required(need_authenticated=True, database=mongo_account_read.account.
                 # decoding the payload to fetch the stored details
                 account_collection = database
                 try:
-                  data = jwt.decode(
-                    token, environ.get("APPLICATION_SIGNATURE_KEY"), algorithms="HS256"
-                  )
+                    data = jwt.decode(
+                        token,
+                        environ.get("APPLICATION_SIGNATURE_KEY"),
+                        algorithms="HS256",
+                    )
                 except jwt.InvalidSignatureError:
-                  data = jwt.decode(
-                    token, environ.get("APPLICATION_SIGNATURE_KEY_TEMP"), algorithms="HS256"
-                  )
+                    data = jwt.decode(
+                        token,
+                        environ.get("APPLICATION_SIGNATURE_KEY_TEMP"),
+                        algorithms="HS256",
+                    )
                 if data["request ip"] != request.remote_addr:
                     return jsonify("Mismatched request ip address !!")
                 current_user = account_collection.find_one({"email": data["email"]})
@@ -115,3 +122,11 @@ def password_validation(password):
         r"^(?=\S{8,20}$)(?=.*?\d)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[^A-Za-z\s0-9])",
         password,
     )
+
+
+def compare_hash(hash, file):
+    text = base64.b64encode(file)
+    encoded_text = text.decode("utf-8").encode("utf-8")
+    hash_object = hashlib.sha512(encoded_text)
+    hex_dig = hash_object.hexdigest()
+    return hex_dig == hash

@@ -16,14 +16,17 @@ recommendation = Blueprint("recommendation", __name__, template_folder="template
 #     logger.info("%s Accessed Recommendation", request.remote_addr)
 #     return jsonify({"users": ["test1", "test2", "test3"]})
 
+
 @recommendation.route("/servererror")
 def server_error():
     abort(500)
+
 
 @recommendation.route("/recommendation")
 @token_required()
 def swipe(user):
     import base64
+
     account_details = mongo_account_details_write.account_details
     profiles = account_details.account_details.find({})
     profile_list = list(profiles)
@@ -47,22 +50,38 @@ def swipe_right(user):
     # request_collection.chat_request.insert_one({"email":user,"request":[]})
     # request_collection.chat_request.insert_one({"email":target_email,"request":[]})
     try:
-      if request_collection.chat_request.find_one({"email":user},{"email":1}) == None or request_collection.chat_request.find_one({"email":target_email},{"email":1}) == None:
-        return jsonify({"response":"target user does not exist"})
-      user_request = request_collection.chat_request.find_one({"email":user},{"request":1})
-      target_user_request = request_collection.chat_request.find_one({"email":target_email},{"request":1})
-      for users in user_request["request"]:
-          if users["target"] == target_email:
-            return jsonify({"response":"already sent chat request"})
-      for target_user in target_user_request["request"]:
+        if (
+            request_collection.chat_request.find_one({"email": user}, {"email": 1})
+            == None
+            or request_collection.chat_request.find_one(
+                {"email": target_email}, {"email": 1}
+            )
+            == None
+        ):
+            return jsonify({"response": "target user does not exist"})
+
+        user_request = request_collection.chat_request.find_one(
+            {"email": user}, {"request": 1}
+        )
+
+        target_user_request = request_collection.chat_request.find_one(
+            {"email": target_email}, {"request": 1}
+        )
+
+        for users in user_request["request"]:
+            if users["target"] == target_email:
+                return jsonify({"response": "already sent chat request"})
+        for target_user in target_user_request["request"]:
             if target_user["target"] == user:
-              return jsonify({"response":"already sent chat request"})
-      new_values = { "$push": { 'request':{"target":target_email,"approved":True}} }
-      request_collection.chat_request.update_one({"email": user},update=new_values)
-      new_values = { "$push": { 'request':{"target":user,"approved":False}} }
-      request_collection.chat_request.update_one({"email": target_email},update=new_values)
+                return jsonify({"response": "already sent chat request"})
+        new_values = {"$push": {"request": {"target": target_email, "approved": True}}}
+        request_collection.chat_request.update_one({"email": user}, update=new_values)
+        new_values = {"$push": {"request": {"target": user, "approved": False}}}
+        request_collection.chat_request.update_one(
+            {"email": target_email}, update=new_values
+        )
     except db_errors.OperationFailure:
-        return jsonify({"response":"Database Operation failure"})
+        return jsonify({"response": "Database Operation failure"})
     # except:
     #     return jsonify({"response":"internal server error"})
-    return jsonify({"response":"chat request was sent"})
+    return jsonify({"response": "chat request was sent"})
