@@ -2,13 +2,13 @@ version: "3.9"
 
 services:
   lovelace-server:
-        build: .
-        ports:
-            - "80:80"
-        environment:
-            - IN_DOCKER=1
-        env_file:
-            - .env
+    build: .
+    ports:
+        - "80:80"
+    environment:
+        - IN_DOCKER=1
+    env_file:
+        - .env
   grafana:
   image: grafana/grafana:7.5.7
   container_name: grafana
