@@ -16,8 +16,8 @@ services:
     - 3000
   restart: unless-stopped
   volumes:
-    - ~/grafana/grafana.ini:/etc/grafana/grafana.ini
-    - ~/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml
+    - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+    - ./grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml
   networks:
       - monitoring
 
