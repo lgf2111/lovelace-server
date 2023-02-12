@@ -59,12 +59,15 @@ def swipe_right(user):
             == None
         ):
             return jsonify({"response": "target user does not exist"})
+
         user_request = request_collection.chat_request.find_one(
             {"email": user}, {"request": 1}
         )
+
         target_user_request = request_collection.chat_request.find_one(
             {"email": target_email}, {"request": 1}
         )
+
         for users in user_request["request"]:
             if users["target"] == target_email:
                 return jsonify({"response": "already sent chat request"})
