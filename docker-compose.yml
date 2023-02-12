@@ -2,24 +2,24 @@ version: "3.9"
 
 services:
   lovelace-server:
-        build: .
-        ports:
-            - "80:80"
-        environment:
-            - IN_DOCKER=1
-        env_file:
-            - .env
+    build: .
+    ports:
+        - "80:80"
+    environment:
+        - IN_DOCKER=1
+    env_file:
+        - .env
   grafana:
-  image: grafana/grafana:7.5.7
-  container_name: grafana
-  expose: 
-    - 3000
-  restart: unless-stopped
-  volumes:
-    - ~/grafana/grafana.ini:/etc/grafana/grafana.ini
-    - ~/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml
-  networks:
-      - monitoring
+    image: grafana/grafana:7.5.7
+    container_name: grafana
+    expose: 
+      - 3000
+    restart: unless-stopped
+    volumes:
+      - ~/grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ~/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml
+    networks:
+        - monitoring
 
   node-exporter:
     image: prom/node-exporter:latest
