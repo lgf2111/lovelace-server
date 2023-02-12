@@ -11,6 +11,7 @@ from lovelace import (
     mongo_temp_write,
     mongo_temp_read,
     mongo_chat_write,
+    mongo_chat_request_read
 )
 
 
@@ -86,8 +87,19 @@ def sent(_, message):
     )["_id"]
     msg = message["message"]
     response = f"{user1} : {msg}"
-    print(response)
-    emit("sent", {"response": response, "message": message}, room=room)
+    chat_request_collection = mongo_chat_request_read.account_details
+    request_list = chat_request_collection.chat_request.find_one({"email":user2})["request"]
+
+    for users in request_list:
+        if user2 in users.keys():
+          approved = users[user2]
+          print(approved)
+          break
+    if approved == True:
+        print(response)
+        emit("sent", {"response": response, "message": message}, room=room)
+    else:
+        emit("sent", {"response": "Receipient has not approved sender for chat"}, room=room)
 
 
 @socketio.on("leave", namespace="/chat")
