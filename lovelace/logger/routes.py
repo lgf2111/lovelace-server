@@ -11,8 +11,8 @@ LOG_DIR = os.path.join(Path(__file__).parent.parent.parent, "logs")
 
 
 @logs.route("/logs/root/<int:start>/<int:limit>", methods=["GET"])
-# @token_required()
-# @admin_required()
+@token_required()
+@admin_required
 def root_logs(start, limit):
     logger.info("%s Accessed root logs", request.remote_addr)
     log_dir = os.path.join(LOG_DIR, "root.log")
@@ -39,8 +39,8 @@ def root_logs(start, limit):
 
 
 @logs.route("/logs/account/<int:start>/<int:limit>")
-# @token_required()
-# @admin_required()
+@token_required()
+@admin_required
 def account_logs(start, limit):
     logger.info("%s Accessed account logs", request.remote_addr)
     log_dir = os.path.join(LOG_DIR, "account.log")
@@ -67,8 +67,8 @@ def account_logs(start, limit):
 
 
 @logs.route("/logs/chat/<int:start>/<int:limit>")
-# @token_required()
-# @admin_required()
+@token_required()
+@admin_required
 def chat_logs(start, limit):
     logger.info("%s Accessed chat logs", request.remote_addr)
     log_dir = os.path.join(LOG_DIR, "chat.log")
@@ -93,8 +93,8 @@ def chat_logs(start, limit):
 
 
 @logs.route("/logs/recommendation/<int:start>/<int:limit>")
-# @token_required()
-# @admin_required()
+@token_required()
+@admin_required
 def recommendation_logs(start, limit):
     logger.info("%s Accessed recommendation logs", request.remote_addr)
     log_dir = os.path.join(LOG_DIR, "recommendation.log")
