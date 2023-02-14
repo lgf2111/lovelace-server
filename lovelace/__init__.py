@@ -53,9 +53,9 @@ recommendation_logger = setup_logger("recommendation")
 
 app = Flask(__name__)
 app.config["WTF_CSRF_SECRET_KEY"] = os.environ.get("APPLICATION_SIGNATURE_KEY")
-Talisman(app,force_https=False)
+Talisman(app, force_https=False)
 
-#csrf = CSRFProtect(app)
+# csrf = CSRFProtect(app)
 auth = HTTPBasicAuth(app)
 metrics = PrometheusMetrics(app, metrics_decorator=auth.login_required)
 metrics.register_default(
@@ -65,7 +65,7 @@ metrics.register_default(
         labels={"path": lambda: request.path},
     )
 )
-#csrf.init_app(app)
+# csrf.init_app(app)
 
 
 @auth.verify_password
@@ -84,9 +84,10 @@ dashboard.bind(app)
 limiter = Limiter(get_remote_address, app=app, default_limits=["50 per minute"])
 socketio = SocketIO(
     app,
-    cors_allowed_origins=[
-        "ec2-13-229-224-40.ap-southeast-1.compute.amazonaws.com",
-    ],
+    # cors_allowed_origins=[
+    #     "127.0.0.1",
+    #     "ec2-13-229-224-40.ap-southeast-1.compute.amazonaws.com",
+    # ],
 )
 
 from lovelace.account.routes import account_page
