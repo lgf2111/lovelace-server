@@ -114,6 +114,7 @@ def join(_, message):
 def sent(_, message):
     user1 = message["user1"]
     user2 = message["user2"]
+    key = message["key"]
     chat_collection = mongo_chat_write.chat
     room = chat_collection.chat.find_one(
         {"$and": [{"user1": user1}, {"user2": user2}]}
@@ -121,7 +122,7 @@ def sent(_, message):
     msg = message["message"]
     response = f"{user1} : {msg}"
     print(response)
-    emit("sent", {"response": response, "message": message}, room=room)
+    emit("sent", {"response": response, "message": message, "key": key}, room=room)
 
 
 @socketio.on("leave", namespace="/chat")
