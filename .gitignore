@@ -167,3 +167,6 @@ monitor/dashboard.db
 grafana/
 prometheus/
 .DS_Store
+node_exporter-1.5.0.darwin-amd64
+prometheus-2.42.0.darwin-amd64
+run-grafana.sh

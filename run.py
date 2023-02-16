@@ -1,5 +1,6 @@
 import os
 from lovelace import app, socketio
+from flask import abort
 from apscheduler.schedulers.background import BackgroundScheduler
 from dotenv import load_dotenv, set_key, find_dotenv
 import random
@@ -16,6 +17,11 @@ load_dotenv(dotenv_file)
 @app.route("/")
 def index():
     return "I'm alive!"
+
+
+@app.route("/servererror")
+def servererror():
+    abort(500)
 
 
 # @app.route("/get_crsf")
